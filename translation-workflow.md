@@ -26,7 +26,7 @@
 
 为了编辑方便，经常需要 1）将诸如 `<div class="p-indent">...</div>` 或者 `<p class="xxx">...</p>` 转换成一行内，以便可以整行直接搬运到 DeepL 翻译。可以用 Jupyter 里用 Python 以及 BeautifulSoup 包完成：
 
-```
+``` python
 import bs4
 filePath = "<file's full path>"
 html = open(filePath)
@@ -41,7 +41,7 @@ text = str(soup).replace("\n", "")
 
 另外，经常有大量没有具体意义的`<span>...</span>`。去掉他们的方法是，先用 VSCode 搜索 `<span>` 将它们替换成 `<span class="none">`，而后再用 BeautifulSoup 给去掉：
 
-```
+``` python
 for span in soup.find_all("span", class_="none"):
   span.unwrap()
 ```
