@@ -522,9 +522,9 @@ end tell
 
 以下是所需文件的“示例：
 
-* [style.css](files/style.css)
-* [toc.css](files/toc.css)
-* [toc.js](files/toc.js)
+> * [style.css](files/style.css)
+> * [toc.css](files/toc.css)
+> * [toc.js](files/toc.js)
 
 把 `./images/` 文件夹重命名为 `./assets/` 之后，记得要 search `images/` 而后 replace `assets/`。
 
@@ -535,7 +535,7 @@ end tell
   <link href="./assets/toc.css" rel="stylesheet" type="text/css" />
 ```
 
-将一下五行插入 `</body>` 之间：
+将以下五行插入 `</body>` 之间：
 ```html
 <script src="./assets/toc.js" ></script>
 <script>
