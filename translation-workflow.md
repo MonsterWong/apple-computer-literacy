@@ -2,7 +2,7 @@
 
 首先当然是 DeepL 的付费版。（国内的人，找个国外的朋友代为支付即可……）
 
-其次是文字编辑器的选择。我选择的是 Visual Studio Code(https://code.visualstudio.com/) —— 这是一个面向程序员设计的纯文本编辑器，但，并非只有程序员们才是用它…… 在进行翻译的时候，它成了最好的选择 —— 因为电子书目前最常见的格式都可以转换成 `html` 文本，用 MS Word 之类的编辑器事实上是很差的选择。比如，`⌘+D` 可以选中多个相同的字符串而后对它们同时编辑 —— 这样的功能，MS Word 之类的 “专业字处理器” 根本就没有，更别说它蹩脚的正则表达式搜索替换功能了（没办法跨文件处理）…… 当然，VSCode 还可以安装各种插件，做更多事情，比如，可以做很多批处理 —— 不可或缺的功能。
+其次是文字编辑器的选择。我选择的是 [Visual Studio Code](https://code.visualstudio.com/) —— 这是一个面向程序员设计的纯文本编辑器，但，并非只有程序员们才是用它…… 在进行翻译的时候，它成了最好的选择 —— 因为电子书目前最常见的格式都可以转换成 `html` 文本，用 MS Word 之类的编辑器事实上是很差的选择。比如，`⌘+D` 可以选中多个相同的字符串而后对它们同时编辑 —— 这样的功能，MS Word 之类的 “专业字处理器” 根本就没有，更别说它蹩脚的正则表达式搜索替换功能了（没办法跨文件处理）…… 当然，VSCode 还可以安装各种插件，做更多事情，比如，可以做很多批处理 —— 不可或缺的功能。
 
 ## 电子书转换路径
 
@@ -18,7 +18,33 @@
 
 最后，再在 Terminal 里用 `unzip` 命令将 `htmlz` 文件解压缩。
 
-整理一下文件夹，休整并补充一下 `style.css`，配上 `toc.css` 和 `toc.js`；最终，形成一个左侧带有固定目录（方便浏览和编辑时跳转）的 `html` 文件……
+整理一下文件夹，休整并补充一下 `style.css`，配上 `toc.css` 和 `toc.js`；最终，形成一个左侧带有固定目录（方便浏览和编辑时跳转）的 `html` 文件……（这一步可以最后做，见最后一节）
+
+## 清理 Calibre 生成的 html 文件
+
+每本电子书被 Calibre 转换成 html 之后，文件内的各种 tag 分布各不相同。
+
+为了编辑方便，经常需要 1）将诸如 `<div class="p-indent">...</div>` 或者 `<p class="xxx">...</p>` 转换成一行内，以便可以整行直接搬运到 DeepL 翻译。可以用 Jupyter 里用 Python 以及 BeautifulSoup 包完成：
+
+``` python
+import bs4
+filePath = "<file's full path>"
+html = open(filePath)
+soup = bs4.BeautifulSoup(html.read())
+# 把所有 div 的内容整理成一行
+for div in soup.find_all("div", class_=["p", "p-indent", "p-blocktext"]):
+  div = str(div).replace("\n", "")
+text = str(soup).replace("\n", "")
+```
+
+随后，可以将 text 拷贝到剪贴板，或者直接写入某个指定的文件……
+
+另外，经常有大量没有具体意义的`<span>...</span>`。去掉他们的方法是，先用 VSCode 搜索 `<span>` 将它们替换成 `<span class="none">`，而后再用 BeautifulSoup 给去掉：
+
+``` python
+for span in soup.find_all("span", class_="none"):
+  span.unwrap()
+```
 
 ## 浏览器自动重载（Auto-reload）
 
@@ -489,3 +515,103 @@ end tell
 用 ssmacro 批处理进行正则表达式替换的效果大致如下：
 
 ![](images/cn-regex-vscode.gif)
+
+## html 样式整理
+
+可以把 `./images/` 文件夹重命名为 `./assets/`，而后把 `style.css`、`toc.css`、`toc.js` 都放到 `./assets/` 文件夹中。
+
+以下是所需文件的“示例：
+
+> * [style.css](files/style.css)
+> * [toc.css](files/toc.css)
+> * [toc.js](files/toc.js)
+
+把 `./images/` 文件夹重命名为 `./assets/` 之后，记得要 search `images/` 而后 replace `assets/`。
+
+
+将以下两行插入到 `<head> </head>` 之间：
+```html
+  <link href="./assets/style.css" rel="stylesheet" type="text/css" />
+  <link href="./assets/toc.css" rel="stylesheet" type="text/css" />
+```
+
+将以下五行插入 `</body>` 之间：
+```html
+<script src="./assets/toc.js" ></script>
+<script>
+  console.log('load')
+  buildTOC('.contents', '.toc')
+</script>
+```
+
+调整一下 `body` tag 之间的结构：
+
+```html
+<body>
+  <div class="header">
+    <!-- 这里是顶部横幅（例如：固定书籍标题） -->
+  </div>
+  <div class="main">
+    <div class="toc">
+      <!-- 这里是手动添加或者只剩生成的 Table of Contents -->
+    </div>
+    <div class="contents">
+      <!-- 这里是书籍内容 -->
+    </div>
+  </div>
+</body>
+```
+
+Calibre 生成的 `style.css` 可以根据自己的偏好调整，比如，我加了一些样式，正如你在这个示例 [style.css](files/style.css) 里看到的那样 ：
+
+```css
+.header{
+    background-color: #eee;
+    position: fixed;
+    /* Set the navbar to fixed position */
+    top: -30px;
+    left: -50px;
+    /* Position the navbar at the top of the page */
+    width: 120%;
+    /* Full width */
+    /* border-bottom: 1px solid #752828; */
+    background: url(assets/background.jpg) #C51216;
+    /* 并不需要这个 background.jpg 存在，只是 “占位” */
+}
+
+.header h1{
+    color: white;
+    text-align: center;
+    font-size: 40px;
+    padding-top: 30px;
+}
+
+.toc {
+    width: 15%;   /* .toc 和 .contents 的宽度加起来应该等于 90% */
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 30px;
+    height: 100vh;
+    padding-top: 50px;
+}
+
+.contents {
+    margin-top: 100px;  /* 这是给顶部固定横幅预留的高度 */
+    margin-left: 20%;
+    padding-top: 50px;
+    width: 75%;   /* .toc 和 .contents 的宽度加起来应该等于 90% */
+}
+
+p{
+    letter-spacing: 0.1em;  /* 这是中文字符排版的 “秘籍” */
+    font-size: 18px;
+    font-family: 'Kaiti SC', Georgia, 'Times New Roman', Times, serif;
+}
+
+img {
+    height: auto !important;
+    width: 95% !important;
+    text-align: center;
+}
+```

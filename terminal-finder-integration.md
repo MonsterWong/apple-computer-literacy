@@ -138,3 +138,11 @@ end tell
 
 Alfred 软件非常灵活，也有很大的用处，花钱买它不亏。
 
+还有另外一个 Alfred Workflow，[alfred-terminalfinder](https://github.com/LeEnno/alfred-terminalfinder)，增加四个快捷命令：
+
+> - ft: open current Finder directory in Terminal
+> - tf: open current Terminal directory in Finder
+> - fi: open current Finder directory in iTerm
+> - if: open current iTerm directory in Finder
+
+![](https://camo.githubusercontent.com/14159afc328e47d5ccd8064eed087ebb59fff699337c0fd8fd98744d9b2fe8fc/68747470733a2f2f7261772e6769746875622e636f6d2f4c65456e6e6f2f616c667265642d7465726d696e616c66696e6465722f6d61737465722f73637265656e73686f745f66742e706e67)

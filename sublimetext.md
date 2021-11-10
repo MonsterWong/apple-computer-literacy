@@ -20,7 +20,7 @@ brew install sublime-text
 
 更多的功能，不妨去查看以下别人的教程：
 
-> * [GETTING STARTED WITH SUBLIME TEXT: 25 TIPS, TRICKS, AND SHORTCUTS]([Sublime Text 3 Tips and Tricks | General Assembly](https://generalassemb.ly/blog/sublime-text-3-tips-tricks-shortcuts/))
+> * [GETTING STARTED WITH SUBLIME TEXT: 25 TIPS, TRICKS, AND SHORTCUTS - Sublime Text 3 Tips and Tricks | General Assembly](https://generalassemb.ly/blog/sublime-text-3-tips-tricks-shortcuts/))
 > * [Sublime Text GIFS Cheat Sheet](https://www.shortcutfoo.com/blog/sublime-text-3-gifs-cheat-sheet/)
 
 当然，任何人最终为了（极大）提高效率，都会（也都有可能）学一点编程的 —— 明明花同样的钱买了一个自动化工具（就是电脑），会不会写程序所带来的效率差异，而不是一倍两倍，有可能万倍千万倍都不止呢。
